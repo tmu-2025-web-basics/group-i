@@ -1,0 +1,378 @@
+/* ハンバーガーメニュー */
+.hamburger-menu {
+    position: fixed;
+    top: 18px;
+    right: 18px;
+    width: 44px;
+    height: 44px;
+    background: rgba(255,255,255,0.6);
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 3000;
+    cursor: pointer;
+    padding: 0;
+}
+.hamburger-menu span {
+    display: block;
+    width: 26px;
+    height: 4px;
+    margin: 3px 0;
+    background: #333;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+    transform-origin: center;
+}
+
+/* ハンバーガーメニューが開いた時のアニメーション */
+.hamburger-menu.active span:nth-child(1) {
+    transform: translateY(10px) rotate(45deg);
+}
+
+.hamburger-menu.active span:nth-child(2) {
+    opacity: 0;
+    transform: scaleX(0);
+}
+
+.hamburger-menu.active span:nth-child(3) {
+    transform: translateY(-10px) rotate(-45deg);
+}
+
+/* ハンバーガーメニュー展開時のオーバーレイ */
+.nav-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.35);
+    z-index: 2999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+/* ナビゲーションメニュー */
+.nav-overlay ul {
+    position: absolute;
+    top: 50%;
+    right: 60px;
+    transform: translateY(-50%) translateX(100px);
+    list-style: none;
+    margin: 0;
+    padding: 20px 30px;
+    background: rgba(255,255,255,0.95);
+    border-radius: 50px / 30px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    backdrop-filter: blur(10px);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    opacity: 0;
+}
+
+.nav-overlay ul li {
+    margin: 15px 0;
+}
+
+.nav-overlay ul li a {
+    display: block;
+    padding: 10px 25px;
+    text-decoration: none;
+    color: #333;
+    font-size: 18px;
+    font-weight: 500;
+    border-radius: 25px / 15px;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+.nav-overlay ul li a:hover {
+    background: rgba(174, 232, 255, 0.3);
+    transform: translateX(-5px);
+}
+
+/* メニューが開いた時に表示 */
+.hamburger-menu.active + .nav-overlay,
+.nav-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.nav-overlay.active ul {
+    transform: translateY(-50%) translateX(0);
+    opacity: 1;
+}
+/* 詳細枠の名前部分を大きく */
+.cloud-details p:first-child {
+    font-size: 1.25em;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+.zigzag-up-wrapper {
+    margin-top: 0px;
+    margin-bottom: 200px;
+}
+.zigzag-down-wrapper {
+    margin-top: 320px;
+    margin-bottom: 0px;
+}
+/* ジグザグ配置用 */
+.zigzag-up {
+    position: relative;
+    top: -20px;
+}
+.zigzag-down {
+    position: relative;
+    top: 20px;
+}
+/* 雲のコレクション用スタイル */
+body {
+    margin: 0;
+    padding: 20px;
+    width: 5200px; /* 画面の幅を5200pxに設定 */
+    min-height: 100vh; /* 最小高さを100vhに設定 */
+    background: linear-gradient(90deg, #F0F8FF 0%, #DFF9FB 25%, #AEE8FF 50%, #FFE4B5 75%, #001F3F 100%); /* 5200px幅に合わせたグラデーション */
+    background-size: 5250px 100%; /* グラデーションを5250px幅に固定 */
+    background-repeat: no-repeat; /* 繰り返しを防止 */
+    font-family: 'Arial', sans-serif;
+    box-sizing: border-box;
+    overflow-x: auto; /* 横スクロールを有効にする */
+    overflow-y: auto; /* 縦スクロールを有効にする */
+}
+
+.collection-container {
+    width: 5200px; /* コンテナの幅を5200pxに設定 */
+    min-height: calc(100vh - 40px); /* コンテナの最小高さを設定（paddingを考慮） */
+    margin: 0;
+    padding: 30px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.header {
+    text-align: left;
+    margin-bottom: 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 2000;
+    background: rgba(255,255,255,0.92);
+    padding: 10px 40px 10px 30px;
+    border-bottom-right-radius: 24px;
+}
+
+.collection-title {
+    color: #FFDDC1;
+    font-size: 64px;
+    font-weight: bold;
+    margin: 0;
+}
+
+
+/* 画像ホバー時のみ詳細枠を表示 */
+.cloud-details {
+    display: none;
+    position: absolute;
+    top: 50%;
+    background: rgba(255,255,255,0.5);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: 340px;
+    z-index: 10;
+    white-space: pre-line;
+    transform: translateY(-50%);
+    word-break: break-all;
+    hyphens: auto;
+    overflow-wrap: break-word;
+}
+
+/* 上段は右側に詳細を表示 */
+.zigzag-up-wrapper .cloud-details {
+    left: 100%;
+    margin-left: 8px;
+    right: auto;
+    margin-right: 0;
+}
+
+/* 下段は左側に詳細を表示 */
+.zigzag-down-wrapper .cloud-details {
+    right: 100%;
+    margin-right: 8px;
+    left: auto;
+    margin-left: 0;
+}
+
+.cloud-img-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 500px;
+    max-width: 100%;
+    height: 330px;
+    box-sizing: border-box;
+}
+
+.cloud-img-wrapper:hover .cloud-details,
+.cloud-img-wrapper:focus-within .cloud-details {
+    display: block;
+}
+
+.cloud-details p {
+    margin: 5px 0;
+    font-size: 14px;
+    width: auto;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+}
+
+.clouds-grid {
+    display: flex;
+    gap: 0px;
+    justify-content: flex-start;
+    align-items: flex-start;
+    min-height: 600px; /* 最小高さを設定 */
+    width: max-content;
+    max-width: none;
+    box-sizing: border-box;
+    padding-top: 40px; /* タイトル分だけ下げる（上に寄せる） */
+    flex-wrap: nowrap;
+}
+
+
+/* 画像は枠や影をつけず、そのまま表示 */
+.cloud.unlocked.zigzag-up,
+.cloud.unlocked.zigzag-down {
+    width: 100%;
+    max-width: 500px;
+    height: auto;
+    max-height: 330px;
+    aspect-ratio: 3/2;
+    object-fit: contain;
+    background: none;
+    box-shadow: none;
+    padding: 0;
+    border-radius: 0;
+    display: inline;
+}
+
+/* アニメーション */
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+.card.unlocked[data-rarity="legendary"] {
+    background: linear-gradient(135deg, #fff, #f8f9fa);
+    position: relative;
+    overflow: hidden;
+}
+
+.card.unlocked[data-rarity="legendary"]::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 215, 0, 0.4),
+        transparent
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+    pointer-events: none;
+}
+
+/* オリジナル雲セクション */
+.original-clouds-section {
+    margin: 100px 0 40px 0; /* 上部に余裕を持たせる */
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 20px;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    width: calc(100% - 60px); /* 左右のpadding分を考慮 */
+}
+
+.original-clouds-section h2 {
+    text-align: left;
+    color: #FFDDC1;
+    margin-bottom: 30px;
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.original-clouds-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 30px;
+    justify-items: center;
+    margin-bottom: 20px;
+}
+
+.saved-cloud-item {
+    background: white;
+    border-radius: 15px;
+    padding: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    text-align: center;
+}
+
+.saved-cloud-item:hover {
+    transform: translateY(-5px);
+}
+
+.cloud-display {
+    position: relative;
+    width: 150px;
+    height: 100px;
+    margin: 0 auto 10px;
+}
+
+.cloud-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.cloud-layer img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.saved-cloud-item h3 {
+    margin: 10px 0 5px;
+    color: #333;
+    font-size: 1.1rem;
+}
+
+.saved-cloud-item p {
+    margin: 0;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.no-clouds {
+    text-align: center;
+    color: #999;
+    font-style: italic;
+    padding: 40px;
+}

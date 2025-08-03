@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>オリジナルの雲を作ろう！</title>
+    <link rel="stylesheet" href="original.css">
+</head>
+<body>
+    <button class="hamburger-menu">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <nav class="nav-overlay">
+        <ul>
+            <li><a href="../index.html">ホーム</a></li>
+            <li><a href="../collection/collection.html">コレクション</a></li>
+            <li><a href="original.html">オリジナルの雲を作ってみよう</a></li>
+        </ul>
+    </nav>
+    <h1>オリジナルの雲を作ろう！</h1>
+    <div class="cloud-container">
+        <div class="cloud-overlay" id="backGround"></div>
+        <div class="cloud" id="mainCloud">好きな形を選んでね</div>
+        <div class="cloud-overlay" id="overlayCloud"></div>
+        <div class="cloud-overlay" id="overlayCloud2"></div>
+    </div>
+    <div class="button-container">
+        <button class="back-button" id="backButton" onclick="goToPreviousPage()" style="display: none;">戻る</button>
+        <button class="decision-button" id="decisionButton" onclick="goToNextPage()">決定</button>
+    </div>
+    <div class="cloud-selection" id="cloudSelection">
+        <div class="cloud-option cloud-shape-1" onclick="selectCloud('☁☁☁', this)">
+            <img src="images/bottom1.PNG" alt="下1">
+        </div>
+        <div class="cloud-option cloud-shape-2" onclick="selectCloud('☁☁☁☁', this)">
+            <img src="images/bottom2.PNG" alt="下2">
+        </div>
+        <div class="cloud-option cloud-shape-3" onclick="selectCloud('● ● ●', this)">
+            <img src="images/bottom3.PNG" alt="下3">
+        </div>
+        <div class="cloud-option cloud-shape-4" onclick="selectCloud('◐', this)">
+            <img src="images/bottom4.PNG" alt="下4">
+        </div>
+    </div>
+    <div class="modal-overlay" id="nameModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>完成！！</h2>
+                <a href="#" class="modal-close" onclick="document.getElementById('nameModal').style.display='none'; return false;">&times;</a>
+            </div>
+            <div class="modal-body">
+                <p>作った雲に名前をつけてみよう！</p>
+                <input type="text" id="cloudNameInput" placeholder="雲の名前を入力してください" maxlength="20">
+                <button class="modal-button" onclick="saveCloudName()">決定</button>
+            </div>
+        </div>
+    </div>
+    <div class="modal-overlay" id="completionModal" style="display: none;">
+        <div class="modal-content completion-modal">
+            <div class="modal-header">
+                <h2>雲が完成しました！</h2>
+                <a href="#" class="modal-close" onclick="closeCompletionModal(); return false;">&times;</a>
+            </div>
+            <div class="modal-body">
+                <div class="completed-cloud-container">
+                    <div class="completed-cloud" id="completedCloudDisplay">
+                        <!-- 完成した雲の画像がここに表示される -->
+                    </div>
+                </div>
+                <div class="cloud-name-display" id="cloudNameDisplay">
+                    <!-- 雲の名前がここに表示される -->
+                </div>
+                <div class="completion-buttons">
+                    <button class="modal-button" onclick="restartCreation()">もう一度作る</button>
+                    <button class="modal-button" onclick="goToCollection()">コレクションを見る</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        let currentStep = 1;
+        let selectedFirstCloud = null;
+        let selectedFirstImage = null;
+        let selectedSecondCloud = null;
+        let selectedSecondImage = null;
+        let selectedThirdCloud = null;
+        let selectedThirdImage = null;
+        let selectedFourthCloud = null; // この行を追加
+        let selectedFourthImage = null; // この行を追加
+        
+        function selectCloud(cloudShape, element) {
+            console.log('Cloud selected:', cloudShape);
+            document.querySelectorAll('.cloud-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            if (currentStep === 1) {
+                const mainCloud = document.getElementById('mainCloud');
+                const imgElement = element.querySelector('img');
+                const imageSrc = imgElement.src;
+                mainCloud.innerHTML = `<img src="${imageSrc}" alt="${cloudShape}" style="max-width: 100%; max-height: 100%; object-fit: contain;">`;
+                mainCloud.classList.add('selected-shape');
+                selectedFirstCloud = cloudShape;
+                selectedFirstImage = imageSrc;
+            } else if (currentStep === 2) {
+                const overlayCloud = document.getElementById('overlayCloud');
+                const imgElement = element.querySelector('img');
+                const imageSrc = imgElement.src;
+                overlayCloud.innerHTML = `<img src="${imageSrc}" alt="${cloudShape}" style="max-width: 100%; max-height: 100%; object-fit: contain;">`;
+                overlayCloud.style.display = 'block';
+                selectedSecondCloud = cloudShape;
+                selectedSecondImage = imageSrc;
+            } else if (currentStep === 3) {
+                const overlayCloud2 = document.getElementById('overlayCloud2');
+                const imgElement = element.querySelector('img');
+                const imageSrc = imgElement.src;
+                overlayCloud2.innerHTML = `<img src="${imageSrc}" alt="${cloudShape}" style="max-width: 100%; max-height: 100%; object-fit: contain;">`;
+                overlayCloud2.style.display = 'block';
+                selectedThirdCloud = cloudShape;
+                selectedThirdImage = imageSrc;
+            } else if (currentStep === 4) {
+                const backGround = document.getElementById('backGround');
+                const imgElement = element.querySelector('img');
+                const imageSrc = imgElement.src;
+                backGround.innerHTML = `<img src="${imageSrc}" alt="${cloudShape}" style="max-width: 100%; max-height: 100%; object-fit: contain;">`;  // backGroundに設定
+                backGround.style.display = 'block';  // backGroundを表示
+                selectedFourthCloud = cloudShape;
+                selectedFourthImage = imageSrc;
+            } else {
+                const backGround = document.getElementById('backGround');
+                const imgElement = element.querySelector('img');
+                const imageSrc = imgElement.src;
+                overlayCloud.innerHTML = `<img src="${imageSrc}" alt="${cloudShape}" style="max-width: 100%; max-height: 100%; object-fit: contain;">`;
+                overlayCloud.style.display = 'block';
+            }
+        }
+        function goToNextPage() {
+            console.log('GoToNextPage called, currentStep:', currentStep);
+            if (currentStep === 1) {
+                if (selectedFirstCloud === null) {
+                    alert('ベースの雲の形を選択してください');
+                    return;
+                }
+                currentStep = 2;
+                showSecondOptions();
+            } else if (currentStep === 2) {
+                if (selectedSecondCloud === null) {
+                    alert('真ん中の雲を選択してください');
+                    return;
+                }
+                currentStep = 3;
+                showThirdOptions();
+            } else if (currentStep === 3) {
+                if (selectedThirdCloud === null) {
+                    alert('トップの雲を選択してください');
+                    return;
+                }
+                currentStep = 4;
+                showFourthOptions();
+            } else {
+                showNameModal();
+            }
+        }
+        function showNameModal() {
+            const modal = document.getElementById('nameModal');
+            modal.style.display = 'flex';
+            document.getElementById('cloudNameInput').focus();
+        }
+        function saveCloudName() {
+            const cloudName = document.getElementById('cloudNameInput').value;
+            if (cloudName.trim() === '') {
+                alert('雲の名前を入力してください');
+                return;
+            }
+            alert(`「${cloudName}」という名前の雲が完成しました！`);
+            const modal = document.getElementById('nameModal');
+            modal.style.display = 'none';
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            const input = document.getElementById('cloudNameInput');
+            if (input) {
+                input.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        saveCloudName();
+                    }
+                });
+            }
+        });
+        function goToPreviousPage() {
+            console.log('GoToPreviousPage called', currentStep);
+            if (currentStep === 4) {
+                currentStep = 3;
+                document.getElementById('backGround').style.display = 'none';
+                showThirdOptions();
+            } else if (currentStep === 3) {
+                currentStep = 2;
+                document.getElementById('overlayCloud2').style.display = 'none';
+                showSecondOptions();
+            } else if (currentStep === 2) {
+                currentStep = 1;
+                document.getElementById('overlayCloud').style.display = 'none';
+                showFirstOptions();
+            }
+        }
+        function showSecondOptions() {
+            console.log('ShowSecondOptions called');
+            const decisionButton = document.getElementById('decisionButton');
+            decisionButton.textContent = '決定';
+            decisionButton.classList.remove('complete-button');
+            const backButton = document.getElementById('backButton');
+            backButton.style.display = 'inline-block';
+            console.log('Back button display set to:', backButton.style.display);
+            const selectionDiv = document.getElementById('cloudSelection');
+            selectionDiv.innerHTML = `
+                <div class="cloud-option cloud-shape-5" onclick="selectCloud('◎', this)">
+                    <img src="images/middle1.PNG" alt="中1">   
+                </div>
+                <div class="cloud-option cloud-shape-6" onclick="selectCloud('△', this)">
+                    <img src="images/middle2.PNG" alt="中2">    
+                </div>
+                <div class="cloud-option cloud-shape-7" onclick="selectCloud('□', this)">
+                    <img src="images/middle3.PNG" alt="中3">    
+                </div>
+                <div class="cloud-option cloud-shape-8" onclick="selectCloud('♦︎', this)">
+                    <img src="images/middle4.PNG" alt="中4">    
+                </div>
+            `;
+            if (selectedSecondCloud) {
+                const cloudShapes = ['◎', '△', '□', '♦︎'];
+                const selectedIndex = cloudShapes.indexOf(selectedSecondCloud);
+                if (selectedIndex !== -1) {
+                    const cloudOptions = document.querySelectorAll('.cloud-option');
+                    selectCloud(selectedSecondCloud, cloudOptions[selectedIndex]);
+                }
+            }
+        }
+        function showThirdOptions() {
+            console.log('ShowThirdOptions called');
+            const decisionButton = document.getElementById('decisionButton');
+            decisionButton.textContent = '決定';
+            decisionButton.classList.remove('complete-button', 'next-button');
+            
+            const selectionDiv = document.getElementById('cloudSelection');
+            selectionDiv.innerHTML = `
+                <div class="cloud-option cloud-shape-9" onclick="selectCloud('★', this)">
+                    <img src="images/top1.PNG" alt="上1">   
+                </div>
+                <div class="cloud-option cloud-shape-10" onclick="selectCloud('♡', this)">
+                    <img src="images/top2.PNG" alt="上2">    
+                </div>
+                <div class="cloud-option cloud-shape-11" onclick="selectCloud('♪', this)">
+                    <img src="images/top3.PNG" alt="上3">    
+                </div>
+                <div class="cloud-option cloud-shape-12" onclick="selectCloud('☆', this)">
+                    <img src="images/top4.PNG" alt="上4">    
+                </div>
+            `;
+            if (selectedThirdCloud) {
+                const cloudShapes = ['★', '♡', '♪', '☆'];
+                const selectedIndex = cloudShapes.indexOf(selectedThirdCloud);
+                if (selectedIndex !== -1) {
+                    const cloudOptions = document.querySelectorAll('.cloud-option');
+                    selectCloud(selectedThirdCloud, cloudOptions[selectedIndex]);
+                }
+            }
+        }
+        function showFourthOptions() {
+            console.log('ShowFourthOptions called');
+            const decisionButton = document.getElementById('decisionButton');
+            decisionButton.textContent = '完成';
+            decisionButton.classList.remove('next-button');
+            decisionButton.classList.add('complete-button');
+            
+            const selectionDiv = document.getElementById('cloudSelection');
+            selectionDiv.innerHTML = `
+                <div class="cloud-option cloud-shape-13" onclick="selectCloud('✨', this)">
+                    <img src="images/backGround1.PNG" alt="背景1">   
+                </div>
+                <div class="cloud-option cloud-shape-14" onclick="selectCloud('⭐', this)">
+                    <img src="images/backGround2.PNG" alt="背景2">    
+                </div>
+                <div class="cloud-option cloud-shape-15" onclick="selectCloud('💫', this)">
+                    <img src="images/backGround3.PNG" alt="背景3">    
+                </div>
+                <div class="cloud-option cloud-shape-16" onclick="selectCloud('🌟', this)">
+                    <img src="images/backGround4.PNG" alt="背景4">    
+                </div>
+            `;
+            if (selectedFourthCloud) {
+                const cloudShapes = ['✨', '⭐', '💫', '🌟'];
+                const selectedIndex = cloudShapes.indexOf(selectedFourthCloud);
+                if (selectedIndex !== -1) {
+                    const cloudOptions = document.querySelectorAll('.cloud-option');
+                    selectCloud(selectedFourthCloud, cloudOptions[selectedIndex]);
+                }
+            } else {
+                selectCloud('✨', document.querySelector('.cloud-option'));
+            }
+        }
+        function showFirstOptions() {
+            const decisionButton = document.getElementById('decisionButton');
+            decisionButton.textContent = '決定';
+            decisionButton.classList.remove('complete-button');
+            const backButton = document.getElementById('backButton');
+            backButton.style.display = 'none';
+            console.log('Back button hidden');
+            document.getElementById('overlayCloud').style.display = 'none';
+            document.getElementById('overlayCloud2').style.display = 'none';
+            document.getElementById('backGround').style.display = 'none';
+            const selectionDiv = document.getElementById('cloudSelection');
+            selectionDiv.innerHTML = `
+                <div class="cloud-option cloud-shape-1" onclick="selectCloud('☁☁☁', this)">
+                    <img src="images/bottom1.PNG" alt="下1">   
+                </div>
+                <div class="cloud-option cloud-shape-2" onclick="selectCloud('☁☁☁☁', this)">
+                    <img src="images/bottom2.PNG" alt="下2">    
+                </div>
+                <div class="cloud-option cloud-shape-3" onclick="selectCloud('● ● ●', this)">
+                    <img src="images/bottom3.PNG" alt="下3">    
+                </div>
+                <div class="cloud-option cloud-shape-4" onclick="selectCloud('◐', this)">
+                    <img src="images/bottom4.PNG" alt="下4">    
+                </div>
+            `;
+            if (selectedFirstCloud && selectedFirstImage) {
+                const mainCloud = document.getElementById('mainCloud');
+                mainCloud.innerHTML = `<img src="${selectedFirstImage}" alt="${selectedFirstCloud}" style="max-width: 100%; max-height: 100%; object-fit: contain;">`;
+                mainCloud.classList.add('selected-shape');
+                const cloudOptions = document.querySelectorAll('.cloud-option');
+                const cloudShapes = ['☁☁☁', '☁☁☁☁', '● ● ●', '◐'];
+                const selectedIndex = cloudShapes.indexOf(selectedFirstCloud);
+                if (selectedIndex !== -1) {
+                    cloudOptions.forEach(option => option.classList.remove('selected'));
+                    cloudOptions[selectedIndex].classList.add('selected');
+                }
+            } else {
+                const mainCloud = document.getElementById('mainCloud');
+                mainCloud.textContent = '好きな形を選んでね';
+                mainCloud.classList.remove('selected-shape');
+            }
+        }
+        window.onload = function() {
+            console.log('Page loaded');
+            document.getElementById('mainCloud').textContent = '好きな形を選んでね';
+            const backButton = document.getElementById('backButton');
+            console.log('Back button  exists:', backButton !== null);
+        }
+    </script>    
+    <script src="original.js"></script>
+</body>
+</html>
